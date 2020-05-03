@@ -7,7 +7,8 @@ from nltk.tokenize import word_tokenize
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
+from plotly.graph_objs import Bar, Pie
+
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
@@ -30,8 +31,7 @@ engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('DisasterResponse', engine)
 
 # load model
-model = joblib.load("../models/my_classifier.pkl")
-
+model = joblib.load("../models/classifier.pkl")
 
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
@@ -42,15 +42,21 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    #create df, count/total_evets of 0,1,2 for each disaster case
+    dfc = pd.DataFrame(index = [0,1,2])
+    col_names =df.columns[4:]
+    for i in range(0, len(col_names)):
+        dfc[col_names[i]] = df.groupby(col_names[i]).count()['message']/len(df)*100
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
-                Bar(
-                    x=genre_names,
-                    y=genre_counts
+                Pie(
+                    labels=genre_names,
+                    values=genre_counts,
+                    hole=0.5
                 )
             ],
 
@@ -63,7 +69,27 @@ def index():
                     'title': "Genre"
                 }
             }
-        }
+        },
+      {
+            'data': [
+                Bar(
+                    x=dfc.iloc[1,:],
+                    y=list(dfc.columns),
+                    orientation='h'
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of disaster cases',
+                'yaxis': {
+                    'title': "Disaster name"
+                },
+                'xaxis': {
+                    'title': "Disaster number in %"
+                }
+            }
+        }  
+        
     ]
     
     # encode plotly graphs in JSON

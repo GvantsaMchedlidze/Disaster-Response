@@ -21,6 +21,7 @@ from nltk.stem import WordNetLemmatizer
 
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline, FeatureUnion
@@ -108,7 +109,7 @@ def build_model():
         )
     }
     
-    cv = GridSearchCV(pipeline, param_grid=parameters,cv=2,verbose=4)
+    cv = GridSearchCV(pipeline, param_grid=parameters,cv=10)
     
     return cv
 
@@ -118,12 +119,28 @@ def evaluate_model(model, X_test, Y_test, category_names):
     y_pred = model.predict(X_test)
     
     for i in range (0,36):
+        # calculate scores
         print (category_names[i],"\n ---------------------------------")
         labels = np.unique(y_pred[:,i])
-        confusion_mat = confusion_matrix(Y_test.iloc[:,i], y_pred[:,i], labels=labels)
-        print("Labels:", labels)
-        print("Confusion Matrix:\n", confusion_mat)
-        print ("Accuracy:",  (y_pred[:,i] == Y_test.iloc[:,i]).mean(),"\n ---------------------------------")
+        #confusion_mat = confusion_matrix(Y_test.iloc[:,i], y_pred[:,i], labels=labels)
+        #print("Labels:", labels)
+        #print("Confusion Matrix:\n", confusion_mat)
+        value = 'binary'
+        if len(labels)>2:
+            value = 'macro'
+        accuracy = accuracy_score(Y_test.iloc[:,i], y_pred[:,i])
+        print('Accuracy:,: %.3f' % accuracy)
+        
+        precision = precision_score(Y_test.iloc[:,i], y_pred[:,i], average= value)
+        print('Precision: %.3f' % precision)
+        
+        recall = recall_score(Y_test.iloc[:,i], y_pred[:,i], average= value)
+        print('Recall: %.3f' % recall)
+       
+        score = f1_score(Y_test.iloc[:,i], y_pred[:,i], average= value)
+        print('F-Measure: %.3f' % score)
+        
+        print ("--------------------------------- \n")
     
     
         
