@@ -5,8 +5,13 @@ Analyzing disaster data from Figure Eight to build a model for an API that class
 1. Run the following commands in the project's root directory to set up your database and model.
 
     - To run ETL pipeline that cleans data and stores in database
+<<<<<<< HEAD
         `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse`
     - To run ML pipeline that trains classifier, shows how it works(prints, accuracy, precission ... scores) and saves the model
+=======
+        `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
+    - To run ML pipeline that trains classifier and saves
+>>>>>>> cf160ef585318e1fa163e67902e460a89ccacab1
         `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
 
 2. Run the following command in the app's directory to run your web app.
