@@ -6,7 +6,7 @@ Analyzing disaster data from Figure Eight to build a model for an API that class
 
     - To run ETL pipeline that cleans data and stores in database
         `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse`
-    - To run ML pipeline that trains classifier and saves
+    - To run ML pipeline that trains classifier, shows how it works(prints, accuracy, precission ... scores) and saves the model
         `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
 
 2. Run the following command in the app's directory to run your web app.

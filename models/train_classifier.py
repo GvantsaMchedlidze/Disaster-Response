@@ -43,6 +43,10 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    '''
+    Takes text as a parameter and returnes cleand tokens
+    '''
+    
     url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
     detected_urls = re.findall(url_regex, text)
     for url in detected_urls:
@@ -59,7 +63,13 @@ def tokenize(text):
     return clean_tokens
 
 class StartingVerbExtractor(BaseEstimator, TransformerMixin):
-
+    '''
+    Starting verb extractor class
+    
+    FIT METHOD: This takes in a 2d array X for the feature data and a 1d array y for the target labels. 
+    Inside the fit method, we simply return self.
+    TRANSFORM METHOD: The transform function is where we include the code that well, transforms the data. 
+    '''
     def starting_verb(self, text):
         sentence_list = nltk.sent_tokenize(text)
         for sentence in sentence_list:
@@ -77,7 +87,13 @@ class StartingVerbExtractor(BaseEstimator, TransformerMixin):
         return pd.DataFrame(X_tagged)
 
 def build_model():
+    '''
+    Build the model:
     
+    Here is used ML pipline and GridSearchCV for tuning parameters in order to select best model.
+    It is used MultiOutputClassifier for output 36 categories and RandomForestClassifier.
+   
+    '''
     pipeline = Pipeline([
         ('features', FeatureUnion([
 
@@ -115,7 +131,13 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-        
+    '''
+    Evaluate the model:
+    
+    The function takes four parameters: the model test sample of mesaages and its category values.
+    The fourth parameter is the category names.
+    It checks goodness of the model (accuracy, precision, recall and f1 scores) 
+    '''    
     y_pred = model.predict(X_test)
     
     for i in range (0,36):
@@ -146,6 +168,12 @@ def evaluate_model(model, X_test, Y_test, category_names):
         
 
 def save_model(model, model_filepath):
+    
+    '''
+    Save the model:
+    
+    The function takes two parameters: the model and the name of the model
+    '''
     #with open(model_filepath, "wb") as clf_outfile:
     pickle.dump(model, open(model_filepath, 'wb'))
       

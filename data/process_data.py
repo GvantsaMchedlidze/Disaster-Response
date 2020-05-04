@@ -1,9 +1,21 @@
+'''
+ETL for given data.
+
+Loading data from csv files, cleaning and saving in database
+'''
 import sys
 import pandas as pd
 from sqlalchemy import create_engine
 import sqlite3
 
 def load_data(messages_filepath, categories_filepath):
+    
+    '''
+    load data from files:
+    the function takes two parameters, as we have two data files and returns merged dataframe
+    
+    '''
+    
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     
@@ -13,6 +25,13 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
+    
+    '''
+    Clean the data:
+    the function merged dataframe dataframe as parameter and returns cleand data, 
+    which have original massages, genre and 36 individual category columns with corresponding values
+    
+    '''
     
     # create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(';',expand=True)
@@ -45,6 +64,11 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
+    '''
+    Load cleaned data in to database:
+    the function has two parametersL one cleand dataframe and second database name
+    
+    '''
     engine = create_engine('sqlite:///'+database_filename)
     df.to_sql('DisasterResponse', engine, index=False)  
 
